@@ -39,6 +39,7 @@
 #include "CellController.hpp"
 #include "GUIController.hpp"
 #include "MechanicsHelper.hpp"
+#include "voip/MumbleLink.hpp"
 
 using namespace mwmp;
 using namespace std;
@@ -461,6 +462,8 @@ void LocalPlayer::updateCell(bool forceUpdate)
         getNetworking()->getPlayerPacket(ID_PLAYER_CELL_CHANGE)->Send();
 
         isChangingRegion = false;
+		
+		MumbleLink::setContext(MWBase::Environment::get().getWorld()->getCellName());
     }
 }
 
