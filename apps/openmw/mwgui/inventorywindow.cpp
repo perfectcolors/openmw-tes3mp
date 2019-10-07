@@ -718,21 +718,6 @@ namespace MWGui
         // can't use ActionTake here because we need an MWWorld::Ptr to the newly inserted object
         MWWorld::Ptr newObject = *player.getClass().getContainerStore (player).add (object, object.getRefData().getCount(), player);
 
-        /*
-            Start of tes3mp addition
-
-            Send an ID_OBJECT_DELETE packet every time an item from the world is picked up
-            by the player through the inventory HUD
-        */
-        mwmp::ObjectList *objectList = mwmp::Main::get().getNetworking()->getObjectList();
-        objectList->reset();
-        objectList->packetOrigin = mwmp::CLIENT_GAMEPLAY;
-        objectList->addObjectDelete(object);
-        objectList->sendObjectDelete();
-        /*
-            End of tes3mp addition
-        */
-
         // remove from world
         MWBase::Environment::get().getWorld()->deleteObject (object);
 

@@ -324,14 +324,18 @@ namespace MWMechanics
 
         Make it easy to get an effect's duration
     */
-    float ActiveSpells::getEffectDuration(short effectId)
+    float ActiveSpells::getEffectDuration(short effectId, std::string sourceId)
     {
         for (TContainer::iterator it = mSpells.begin(); it != mSpells.end(); ++it)
         {
-            for (std::vector<ActiveEffect>::iterator effectIt = it->second.mEffects.begin();
-                effectIt != it->second.mEffects.end();)
+            if (sourceId.compare(it->first) == 0)
             {
-                return effectIt->mDuration;
+                for (std::vector<ActiveEffect>::iterator effectIt = it->second.mEffects.begin();
+                    effectIt != it->second.mEffects.end(); ++effectIt)
+                {
+                    if (effectIt->mEffectId == effectId)
+                        return effectIt->mDuration;
+                }
             }
         }
         return 0.f;

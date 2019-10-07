@@ -202,7 +202,7 @@ add_component_dir (openmw-mp/Packets/Object
 add_component_dir (openmw-mp/Packets/Worldstate
         WorldstatePacket
 
-        PacketCellCreate PacketCellReplace PacketRecordDynamic PacketWorldCollisionOverride PacketWorldMap
+        PacketCellCreate PacketCellReset PacketRecordDynamic PacketWorldCollisionOverride PacketWorldMap
         PacketWorldRegionAuthority PacketWorldTime PacketWorldWeather
         )
 

@@ -109,7 +109,7 @@ namespace MWMechanics
 
                 Make it easy to get an effect's duration
             */
-            float getEffectDuration(short effectId);
+            float getEffectDuration(short effectId, std::string sourceId);
             /*
                 End of tes3mp addition
             */

@@ -3133,6 +3133,18 @@ namespace MWWorld
                 End of tes3mp addition
             */
 
+            /*
+                Start of tes3mp addition
+
+                Always start spells cast by DedicatedPlayers and DedicatedActors,
+                without unilaterally deducting any magicka for them on this client
+            */
+            if (mwmp::PlayerList::isDedicatedPlayer(actor) || mwmp::Main::get().getCellController()->isDedicatedActor(actor))
+                return true;
+            /*
+                End of tes3mp addition
+            */
+
             const ESM::Spell* spell = getStore().get<ESM::Spell>().find(selectedSpell);
 
             // Check mana

@@ -26,6 +26,14 @@
 */
 //==============================================================================
 
+#pragma once
+
+#include <LuaBridge/detail/TypeList.h>
+
+#include <cassert>
+
+namespace luabridge {
+
 //==============================================================================
 /**
   Return the identity pointer for our lightuserdata tokens.
@@ -179,14 +187,18 @@ private:
                              void const* baseClassKey,
                              bool canBeConst)
   {
-    assert (index > 0);
+    index = index > 0 ? index : lua_absindex (L, index);
+
     Userdata* ud = 0;
 
     bool mismatch = false;
     char const* got = 0;
 
     lua_rawgetp (L, LUA_REGISTRYINDEX, baseClassKey);
-    assert (lua_istable (L, -1));
+    if (!lua_istable (L, -1))
+    {
+      throw std::logic_error ("The class is not registered in LuaBridge");
+    }
 
     // Make sure we have a userdata.
     if (lua_isuserdata (L, index))
@@ -371,8 +383,10 @@ public:
     UserdataValue <T>* const ud = new (
       lua_newuserdata (L, sizeof (UserdataValue <T>))) UserdataValue <T> ();
     lua_rawgetp (L, LUA_REGISTRYINDEX, ClassInfo <T>::getClassKey ());
-    // If this goes off it means you forgot to register the class!
-    assert (lua_istable (L, -1));
+    if (!lua_istable (L, -1))
+    {
+      throw std::logic_error ("The class is not registered in LuaBridge");
+    }
     lua_setmetatable (L, -2);
     return ud->getPointer ();
   }
@@ -408,8 +422,10 @@ private:
     {
       new (lua_newuserdata (L, sizeof (UserdataPtr))) UserdataPtr (p);
       lua_rawgetp (L, LUA_REGISTRYINDEX, key);
-      // If this goes off it means you forgot to register the class!
-      assert (lua_istable (L, -1));
+      if (!lua_istable (L, -1))
+      {
+        throw std::logic_error ("The class is not registered in LuaBridge");
+      }
       lua_setmetatable (L, -2);
     }
     else
@@ -427,8 +443,10 @@ private:
       new (lua_newuserdata (L, sizeof (UserdataPtr)))
         UserdataPtr (const_cast <void*> (p));
       lua_rawgetp (L, LUA_REGISTRYINDEX, key);
-      // If this goes off it means you forgot to register the class!
-      assert (lua_istable (L, -1));
+      if (!lua_istable (L, -1))
+      {
+        throw std::logic_error ("The class is not registered in LuaBridge");
+      }
       lua_setmetatable (L, -2);
     }
     else
@@ -815,3 +833,5 @@ struct Stack <T const&>
     return helper_t::get (L, index);
   }
 };
+
+} // namespace luabridge

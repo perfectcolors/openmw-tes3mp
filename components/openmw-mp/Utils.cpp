@@ -192,15 +192,16 @@ std::string Utils::getArchitectureType()
 {
 #if defined(__x86_64__) || defined(_M_X64)
     return "64-bit";
-#elif defined(__i386__) || defined(_M_I86)
+#elif defined(__i386__) || defined(_M_I86) || defined(_M_IX86)
     return "32-bit";
 #elif defined(__ARM_ARCH)
-    return "ARMv" + __ARM_ARCH;
+    std::string architectureType = "ARMv" + __ARM_ARCH;
 #ifdef __aarch64__
-    return "64-bit";
+    architectureType = architectureType + " 64-bit";
 #else
-    return "32-bit";
+    architectureType = architectureType + " 32-bit";
 #endif
+    return architectureType;
 #else
     return "Unknown architecture";
 #endif

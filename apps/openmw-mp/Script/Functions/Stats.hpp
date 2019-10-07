@@ -30,9 +30,11 @@
     \
     {"GetAttributeBase",        StatsFunctions::GetAttributeBase},\
     {"GetAttributeModifier",    StatsFunctions::GetAttributeModifier},\
+    {"GetAttributeDamage",      StatsFunctions::GetAttributeDamage},\
     \
     {"GetSkillBase",            StatsFunctions::GetSkillBase},\
     {"GetSkillModifier",        StatsFunctions::GetSkillModifier},\
+    {"GetSkillDamage",          StatsFunctions::GetSkillDamage},\
     {"GetSkillProgress",        StatsFunctions::GetSkillProgress},\
     {"GetSkillIncrease",        StatsFunctions::GetSkillIncrease},\
     \
@@ -58,9 +60,11 @@
     \
     {"SetAttributeBase",        StatsFunctions::SetAttributeBase},\
     {"ClearAttributeModifier",  StatsFunctions::ClearAttributeModifier},\
+    {"SetAttributeDamage",      StatsFunctions::SetAttributeDamage},\
     \
     {"SetSkillBase",            StatsFunctions::SetSkillBase},\
     {"ClearSkillModifier",      StatsFunctions::ClearSkillModifier},\
+    {"SetSkillDamage",          StatsFunctions::SetSkillDamage},\
     {"SetSkillProgress",        StatsFunctions::SetSkillProgress},\
     {"SetSkillIncrease",        StatsFunctions::SetSkillIncrease},\
     \
@@ -268,6 +272,16 @@ public:
     static int GetAttributeModifier(unsigned short pid, unsigned short attributeId) noexcept;
 
     /**
+    * \brief Get the amount of damage (as caused through the Damage Attribute effect)
+    *        to a player's attribute.
+    *
+    * \param pid The player ID.
+    * \param attributeId The attribute ID.
+    * \return The amount of damage to the attribute.
+    */
+    static double GetAttributeDamage(unsigned short pid, unsigned short attributeId) noexcept;
+
+    /**
     * \brief Get the base value of a player's skill.
     *
     * \param pid The player ID.
@@ -284,6 +298,16 @@ public:
     * \return The modifier value of the skill.
     */
     static int GetSkillModifier(unsigned short pid, unsigned short skillId) noexcept;
+
+    /**
+    * \brief Get the amount of damage (as caused through the Damage Skill effect)
+    *        to a player's skill.
+    *
+    * \param pid The player ID.
+    * \param skillId The skill ID.
+    * \return The amount of damage to the skill.
+    */
+    static double GetSkillDamage(unsigned short pid, unsigned short skillId) noexcept;
 
     /**
     * \brief Get the progress the player has made towards increasing a certain skill by 1.
@@ -478,6 +502,17 @@ public:
     static void ClearAttributeModifier(unsigned short pid, unsigned short attributeId) noexcept;
 
     /**
+    * \brief Set the amount of damage (as caused through the Damage Attribute effect) to
+    *        a player's attribute.
+    *
+    * \param pid The player ID.
+    * \param attributeId The attribute ID.
+    * \param value The amount of damage to the player's attribute.
+    * \return void
+    */
+    static void SetAttributeDamage(unsigned short pid, unsigned short attributeId, double value) noexcept;
+
+    /**
     * \brief Set the base value of a player's skill.
     *
     * \param pid The player ID.
@@ -500,6 +535,17 @@ public:
     * \return void
     */
     static void ClearSkillModifier(unsigned short pid, unsigned short skillId) noexcept;
+
+    /**
+    * \brief Set the amount of damage (as caused through the Damage Skill effect) to
+    *        a player's skill.
+    *
+    * \param pid The player ID.
+    * \param skillId The skill ID.
+    * \param value The amount of damage to the player's skill.
+    * \return void
+    */
+    static void SetSkillDamage(unsigned short pid, unsigned short skillId, double value) noexcept;
 
     /**
     * \brief Set the progress the player has made towards increasing a certain skill by 1.

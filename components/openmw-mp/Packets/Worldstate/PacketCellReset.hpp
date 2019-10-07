@@ -1,18 +1,18 @@
-#ifndef OPENMW_PACKETCELLREPLACE_HPP
-#define OPENMW_PACKETCELLREPLACE_HPP
+#ifndef OPENMW_PACKETCELLRESET_HPP
+#define OPENMW_PACKETCELLRESET_HPP
 
 #include <components/openmw-mp/Packets/Worldstate/WorldstatePacket.hpp>
 #include <components/openmw-mp/NetworkMessages.hpp>
 
 namespace mwmp
 {
-    class PacketCellReplace: public WorldstatePacket
+    class PacketCellReset: public WorldstatePacket
     {
     public:
-        PacketCellReplace(RakNet::RakPeerInterface *peer);
+        PacketCellReset(RakNet::RakPeerInterface *peer);
 
         virtual void Packet(RakNet::BitStream *bs, bool send);
     };
 }
 
-#endif //OPENMW_PACKETCELLREPLACE_HPP
+#endif //OPENMW_PACKETCELLRESET_HPP

@@ -178,7 +178,7 @@ void LangLua::LoadProgram(const char *filename)
 
     constexpr auto functions_n = sizeof(ScriptFunctions::functions) / sizeof(ScriptFunctions::functions[0]);
 
-#if __arm__
+#ifdef __arm__
     LuaFuctionData *functions_ = functions(IndicesFor<functions_n>{});
 #else
     LuaFuctionData *functions_ = functions<sizeof(ScriptFunctions::functions) / sizeof(ScriptFunctions::functions[0])>();

@@ -53,8 +53,8 @@ namespace  mwmp
         void setCurrentMpNum(int value);
         int incrementMpNum();
 
-        bool getPluginEnforcementState();
-        void setPluginEnforcementState(bool state);
+        bool getDataFileEnforcementState();
+        void setDataFileEnforcementState(bool state);
 
         bool getScriptErrorIgnoringState();
         void setScriptErrorIgnoringState(bool state);

@@ -537,7 +537,7 @@ void ActorFunctions::InitializeActorList(unsigned short pid) noexcept
 
 void ActorFunctions::CopyLastActorListToStore() noexcept
 {
-    CopyLastActorListToStore();
+    CopyReceivedActorListToStore();
 }
 
 unsigned int ActorFunctions::GetActorRefNumIndex(unsigned int index) noexcept

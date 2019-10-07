@@ -47,7 +47,6 @@ class ScriptFunctions
 {
 public:
 
-    static void GetArguments(std::vector<boost::any> &params, va_list args, const std::string &def);
     static void MakePublic(ScriptFunc _public, const char *name, char ret_type, const char *def) noexcept;
     static boost::any CallPublic(const char *name, va_list args) noexcept;
 
@@ -157,6 +156,7 @@ public:
             {"OnServerInit",             Callback<>()},
             {"OnServerPostInit",         Callback<>()},
             {"OnServerExit",             Callback<bool>()},
+            {"OnServerScriptCrash",      Callback<const char*>()},
             {"OnPlayerConnect",          Callback<unsigned short>()},
             {"OnPlayerDisconnect",       Callback<unsigned short>()},
             {"OnPlayerDeath",            Callback<unsigned short>()},
@@ -209,7 +209,7 @@ public:
             {"OnWorldMap",               Callback<unsigned short>()},
             {"OnWorldWeather",           Callback<unsigned short>() },
             {"OnMpNumIncrement",         Callback<int>()},
-            {"OnRequestPluginList",      Callback<>()}
+            {"OnRequestDataFileList",    Callback<>()}
     };
 };
 

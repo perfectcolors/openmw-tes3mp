@@ -1,13 +1,11 @@
-//
-// Created by koncord on 04.03.17.
-//
-
 #ifndef OPENMW_UTILS_HPP
 #define OPENMW_UTILS_HPP
 
 #include <cstddef>
 #include <regex>
 #include <vector>
+
+#include <boost/any.hpp>
 
 #include <components/esm/loadcell.hpp>
 
@@ -26,6 +24,8 @@ namespace Utils
     const std::vector<std::string> split(const std::string &str, int delimiter);
 
     ESM::Cell getCellFromDescription(std::string cellDescription);
+
+    void getArguments(std::vector<boost::any> &params, va_list args, const std::string &def);
 
     template<size_t N>
     constexpr unsigned int hash(const char(&str)[N], size_t I = N)

@@ -27,6 +27,17 @@
 */
 //==============================================================================
 
+#pragma once
+
+#include <LuaBridge/detail/LuaHelpers.h>
+
+#include <string>
+
+namespace luabridge {
+
+template <class T>
+struct Stack;
+
 //------------------------------------------------------------------------------
 /**
     Receive the lua_State* as an argument.
@@ -77,18 +88,10 @@ struct Stack <int>
 };
 
 template <>
-struct Stack <int const&>
+struct Stack <int const&> : public Stack <int>
 {
-  static inline void push (lua_State* L, int value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline int get (lua_State* L, int index)
-  {
-    return static_cast <int > (luaL_checknumber (L, index));
-  }
 };
+
 //------------------------------------------------------------------------------
 /**
     Stack specialization for `unsigned int`.
@@ -108,17 +111,8 @@ struct Stack <unsigned int>
 };
 
 template <>
-struct Stack <unsigned int const&>
+struct Stack <unsigned int const&> : Stack <unsigned int>
 {
-  static inline void push (lua_State* L, unsigned int value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline unsigned int get (lua_State* L, int index)
-  {
-    return static_cast <unsigned int > (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -140,17 +134,8 @@ struct Stack <unsigned char>
 };
 
 template <>
-struct Stack <unsigned char const&>
+struct Stack <unsigned char const&> : Stack <unsigned char>
 {
-  static inline void push (lua_State* L, unsigned char value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline unsigned char get (lua_State* L, int index)
-  {
-    return static_cast <unsigned char> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -172,17 +157,8 @@ struct Stack <short>
 };
 
 template <>
-struct Stack <short const&>
+struct Stack <short const&> : Stack <short>
 {
-  static inline void push (lua_State* L, short value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline short get (lua_State* L, int index)
-  {
-    return static_cast <short> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -204,17 +180,8 @@ struct Stack <unsigned short>
 };
 
 template <>
-struct Stack <unsigned short const&>
+struct Stack <unsigned short const&> : Stack <unsigned short>
 {
-  static inline void push (lua_State* L, unsigned short value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline unsigned short get (lua_State* L, int index)
-  {
-    return static_cast <unsigned short> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -236,17 +203,8 @@ struct Stack <long>
 };
 
 template <>
-struct Stack <long const&>
+struct Stack <long const&> : public Stack <long>
 {
-  static inline void push (lua_State* L, long value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline long get (lua_State* L, int index)
-  {
-    return static_cast <long> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -268,17 +226,8 @@ struct Stack <unsigned long>
 };
 
 template <>
-struct Stack <unsigned long const&>
+struct Stack <unsigned long const&> : public Stack <unsigned long>
 {
-  static inline void push (lua_State* L, unsigned long value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline unsigned long get (lua_State* L, int index)
-  {
-    return static_cast <unsigned long> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -300,17 +249,8 @@ struct Stack <float>
 };
 
 template <>
-struct Stack <float const&>
+struct Stack <float const&> : Stack <float>
 {
-  static inline void push (lua_State* L, float value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline float get (lua_State* L, int index)
-  {
-    return static_cast <float> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -330,17 +270,9 @@ template <> struct Stack <double>
   }
 };
 
-template <> struct Stack <double const&>
+template <>
+struct Stack <double const&> : Stack <double>
 {
-  static inline void push (lua_State* L, double value)
-  {
-    lua_pushnumber (L, static_cast <lua_Number> (value));
-  }
-  
-  static inline double get (lua_State* L, int index)
-  {
-    return static_cast <double> (luaL_checknumber (L, index));
-  }
 };
 
 //------------------------------------------------------------------------------
@@ -348,7 +280,8 @@ template <> struct Stack <double const&>
     Stack specialization for `bool`.
 */
 template <>
-struct Stack <bool> {
+struct Stack <bool>
+{
   static inline void push (lua_State* L, bool value)
   {
     lua_pushboolean (L, value ? 1 : 0);
@@ -361,16 +294,8 @@ struct Stack <bool> {
 };
 
 template <>
-struct Stack <bool const&> {
-  static inline void push (lua_State* L, bool value)
-  {
-    lua_pushboolean (L, value ? 1 : 0);
-  }
-  
-  static inline bool get (lua_State* L, int index)
-  {
-    return lua_toboolean (L, index) ? true : false;
-  }
+struct Stack <bool const&> : Stack <bool>
+{
 };
 
 //------------------------------------------------------------------------------
@@ -382,8 +307,7 @@ struct Stack <char>
 {
   static inline void push (lua_State* L, char value)
   {
-    char str [2] = { value, 0 };
-    lua_pushstring (L, str);
+    lua_pushlstring (L, &value, 1);
   }
   
   static inline char get (lua_State* L, int index)
@@ -393,23 +317,13 @@ struct Stack <char>
 };
 
 template <>
-struct Stack <char const&>
+struct Stack <char const&> : Stack <char>
 {
-  static inline void push (lua_State* L, char value)
-  {
-    char str [2] = { value, 0 };
-    lua_pushstring (L, str);
-  }
-  
-  static inline char get (lua_State* L, int index)
-  {
-    return luaL_checkstring (L, index) [0];
-  }
 };
 
 //------------------------------------------------------------------------------
 /**
-    Stack specialization for `float`.
+    Stack specialization for `const char*`.
 */
 template <>
 struct Stack <char const*>
@@ -437,33 +351,64 @@ struct Stack <std::string>
 {
   static inline void push (lua_State* L, std::string const& str)
   {
-    lua_pushlstring (L, str.c_str (), str.size());
+    lua_pushlstring (L, str.data (), str.size());
   }
 
   static inline std::string get (lua_State* L, int index)
   {
     size_t len;
-    const char *str = luaL_checklstring(L, index, &len);
+    const char *str = luaL_checklstring (L, index, &len);
     return std::string (str, len);
   }
+};
+
+template <>
+struct Stack <std::string const&> : Stack <std::string>
+{
 };
 
 //------------------------------------------------------------------------------
 /**
-    Stack specialization for `std::string const&`.
+Stack specialization for `long long`.
 */
 template <>
-struct Stack <std::string const&>
+struct Stack <long long>
 {
-  static inline void push (lua_State* L, std::string const& str)
+  static inline void push (lua_State* L, long long value)
   {
-    lua_pushlstring (L, str.c_str(), str.size());
+    lua_pushinteger (L, static_cast <lua_Integer> (value));
   }
-
-  static inline std::string get (lua_State* L, int index)
+  static inline long long get (lua_State* L, int index)
   {
-    size_t len;
-    const char *str = luaL_checklstring(L, index, &len);
-    return std::string (str, len);
+    return static_cast <long long> (luaL_checkinteger (L, index));
   }
 };
+
+template <>
+struct Stack <long long const&> : public Stack <long long>
+{
+};
+
+//------------------------------------------------------------------------------
+/**
+Stack specialization for `unsigned long long`.
+*/
+template <>
+struct Stack <unsigned long long>
+{
+  static inline void push (lua_State* L, unsigned long long value)
+  {
+    lua_pushinteger (L, static_cast <lua_Integer> (value));
+  }
+  static inline unsigned long long get (lua_State* L, int index)
+  {
+    return static_cast <unsigned long long> (luaL_checkinteger (L, index));
+  }
+};
+
+template <>
+struct Stack <unsigned long long const&> : Stack <unsigned long long>
+{
+};
+
+} // namespace luabridge

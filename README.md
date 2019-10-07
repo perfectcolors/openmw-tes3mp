@@ -2,7 +2,7 @@ TES3MP
 ======
 
 Copyright (c) 2008-2015, OpenMW Team  
-Copyright (c) 2016-2018, TES3MP Team
+Copyright (c) 2016-2019, Stanislav Zhukov & David Cernat
 
 [![Build Status](https://travis-ci.org/TES3MP/openmw-tes3mp.svg?branch=0.7.0)](https://travis-ci.org/TES3MP/openmw-tes3mp)
 
@@ -15,7 +15,7 @@ TES3MP is a project adding multiplayer functionality to [OpenMW](https://github.
 Font Licenses:
 * DejaVuLGCSansMono.ttf: custom (see [files/mygui/DejaVu Font License.txt](https://github.com/TES3MP/openmw-tes3mp/blob/master/files/mygui/DejaVu%20Font%20License.txt) for more information)
 
-Project Status
+Project status
 --------------
 
 [Version changelog](https://github.com/TES3MP/openmw-tes3mp/blob/master/tes3mp-changelog.md)
@@ -24,25 +24,26 @@ As of version 0.7.0, TES3MP is fully playable, providing very extensive player, 
 
 Remaining gameplay problems mostly relate to AI and the synchronization of clientside script variables.
 
+Donations
+---------------
+
+You can benefit the project by donating on Patreon to our two developers, [David Cernat](https://www.patreon.com/davidcernat) and [Koncord](https://www.patreon.com/Koncord), as well as by supporting [OpenMW](https://openmw.org).
+
 Contributing
---------------
+---------------
 
-Development has been relatively fast, but any contribution regarding [code](https://github.com/TES3MP/openmw-tes3mp/blob/master/CONTRIBUTING.md), documentation, bug hunting or video showcases is greatly appreciated.
+Helping us with documentation, bug hunting and video showcases is always greatly appreciated.
 
-Test sessions are often advertised on [our Discord server](https://discord.gg/ECJk293) or in [our Steam group](https://steamcommunity.com/groups/mwmulti).
+For code contributions, it's best to start out with modestly sized fixes and features and work your way up. There are so many different possible implementations of more major features – many of which would cause undesirable code or vision conflicts with OpenMW – that those should be talked over in advance with the existing developers before effort is spent on them.
 
 Feel free to contact the [team members](https://github.com/TES3MP/openmw-tes3mp/blob/master/tes3mp-credits.md) for any questions you might have.
 
-Getting Started
+Getting started
 ---------------
 
 * [Quickstart guide](https://github.com/TES3MP/openmw-tes3mp/wiki/Quickstart-guide)
 * [Steam group](https://steamcommunity.com/groups/mwmulti) and its [detailed FAQ](https://steamcommunity.com/groups/mwmulti/discussions/1/353916184342480541/)
 * [TES3MP section on OpenMW forums](https://forum.openmw.org/viewforum.php?f=45)
+* [Discord server](https://discord.gg/ECJk293)
 * [Subreddit](https://www.reddit.com/r/tes3mp)
 * [Known issues and bug reports](https://github.com/TES3MP/openmw-tes3mp/issues)
-
-Donations
----------------
-
-You can benefit the project by contributing to the Patreon pages of our two developers, [David Cernat](https://www.patreon.com/davidcernat) and [Koncord](https://www.patreon.com/Koncord), as well as by supporting [OpenMW](https://openmw.org).

@@ -1,5 +1,5 @@
 #include "../Packets/Worldstate/PacketCellCreate.hpp"
-#include "../Packets/Worldstate/PacketCellReplace.hpp"
+#include "../Packets/Worldstate/PacketCellReset.hpp"
 #include "../Packets/Worldstate/PacketRecordDynamic.hpp"
 #include "../Packets/Worldstate/PacketWorldCollisionOverride.hpp"
 #include "../Packets/Worldstate/PacketWorldMap.hpp"
@@ -20,7 +20,7 @@ inline void AddPacket(mwmp::WorldstatePacketController::packets_t *packets, RakN
 mwmp::WorldstatePacketController::WorldstatePacketController(RakNet::RakPeerInterface *peer)
 {
     AddPacket<PacketCellCreate>(&packets, peer);
-    AddPacket<PacketCellReplace>(&packets, peer);
+    AddPacket<PacketCellReset>(&packets, peer);
     AddPacket<PacketRecordDynamic>(&packets, peer);
     AddPacket<PacketWorldCollisionOverride>(&packets, peer);
     AddPacket<PacketWorldMap>(&packets, peer);

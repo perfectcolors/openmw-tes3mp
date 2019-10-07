@@ -17,6 +17,8 @@
 #include "../mwbase/windowmanager.hpp"
 
 #include "../mwgui/container.hpp"
+#include "../mwgui/inventorywindow.hpp"
+#include "../mwgui/windowmanagerimp.hpp"
 
 #include "../mwmechanics/aifollow.hpp"
 #include "../mwmechanics/spellcasting.hpp"
@@ -321,7 +323,17 @@ void ObjectList::activateObjects(MWWorld::CellStore* cellStore)
 
             if (activatingActorPtr)
             {
-                MWBase::Environment::get().getWorld()->activate(ptrFound, activatingActorPtr);
+                // Is an item that can be picked up being activated by the local player with their inventory open?
+                if (activatingActorPtr == MWBase::Environment::get().getWorld()->getPlayerPtr() &&
+                    (MWBase::Environment::get().getWindowManager()->getMode() == MWGui::GM_Container ||
+                    MWBase::Environment::get().getWindowManager()->getMode() == MWGui::GM_Inventory))
+                {
+                    MWBase::Environment::get().getWindowManager()->getInventoryWindow()->pickUpObject(ptrFound);
+                }
+                else
+                {
+                    MWBase::Environment::get().getWorld()->activate(ptrFound, activatingActorPtr);
+                }
             }
         }
     }

@@ -66,6 +66,8 @@ boost::any ScriptFunction::Call(const vector<boost::any> &args)
             default:
                 throw runtime_error("Lua call: Unknown return type" + ret_type);
         }
+
+        lua_settop(fLua.lua, 0);
     }
 #endif
 

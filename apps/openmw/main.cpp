@@ -221,13 +221,13 @@ bool parseOptions (int argc, char** argv, OMW::Engine& engine, Files::Configurat
     /*
         Start of tes3mp addition
 
-        Check for unmodified tes3mp-credits file; this makes it so people can't repackage official releases with
-        their own made-up credits, though it obviously has no bearing on unofficial releases that change
-        the checksum below
+        Check for unmodified tes3mp-credits file on Windows; this makes it so people can't repackage official
+        releases with their own made-up credits, though it obviously has no bearing on unofficial releases that
+        change the checksum below
     */
-    boost::filesystem::path folderPath(boost::filesystem::initial_path<boost::filesystem::path>());
-    folderPath = boost::filesystem::system_complete(boost::filesystem::path(argv[0])).remove_filename();
-    std::string creditsPath = folderPath.string() + "/tes3mp-credits";
+#ifdef _WIN32
+
+    std::string creditsPath = (cfgMgr.getLocalPath() / "tes3mp-credits").string();
 
     unsigned int expectedChecksumInt = Utils::hexStrToInt(TES3MP_CREDITS_CHECKSUM);
     bool hasValidCredits = Utils::doesFileHaveChecksum(creditsPath + ".md", expectedChecksumInt);
@@ -242,6 +242,7 @@ bool parseOptions (int argc, char** argv, OMW::Engine& engine, Files::Configurat
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "tes3mp", TES3MP_CREDITS_ERROR, 0);
         return false;
     }
+#endif
     /*
         End of tes3mp addition
     */

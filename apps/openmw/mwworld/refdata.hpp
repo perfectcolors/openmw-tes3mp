@@ -150,7 +150,8 @@ namespace MWWorld
             {
                 None = 0,
                 Enabled = 1,
-                Disabled = 2
+                Disabled = 2,
+                Deleted = 3
             };
 
         private:

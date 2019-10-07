@@ -52,6 +52,7 @@ namespace mwmp
         void resurrect();
 
         void closeInventoryWindows();
+        void updateInventoryWindow();
 
         void setCharacter();
         void setDynamicStats();

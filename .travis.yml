@@ -4,7 +4,7 @@ os:
 osx_image: xcode9.4
 language: cpp
 sudo: required
-dist: trusty
+dist: xenial
 branches:
   only:
     - master
@@ -15,18 +15,18 @@ env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-  - secure: NZmvVuA0O9NJXVQ12tXQZHDJC2mbFgYNFcsicw0DgW1It2Nk5hxIkF0pfu4/Z59mhQuOPgRVjl5b0FKy2Axh0gkWc1DJEXGwNaiW5lpTMNWR1LJG5rxa8LrDUpFkycpbzfAFuTUZu5z3iYVv64XzELvBuqNGhPMu1LeBnrlech0jFNjkR9p5qtJGWb8zYcPMCC57rig8a9g1ABoVYS6UXjrKpx0946ZLRsE5ukc9pXsypGwPmOMyfzZkxxzIqFaxoE5JIEdaJTWba/6Za315ozYYIi/N35ROI1YAv5GHRe/Iw9XAa4vQpbDzjM7ZSsZdTvvQsSU598gD2xC6jFUKSrpW6GZKwM2x236fZLGnOk5Uw7DUbG+AwpcEmxBwoy9PjBl9ZF3tJykI0gROewCy8MODhdsVMKr1HGIMVBIJySm/RnNqtoDbYV8mYnSl5b8rwJiCajoiR8Zuv4CIfGneeH1a3DOQDPH/qkDsU6ilzF4ANsBlMUUpgY653KBMBmTlNuVZSH527tnD7Fg6JgHVuSQkTbRa1vSkR7Zcre604RZcAoaEdbX3bhVDasPPghU/I742L0RH3oQNlR09pPBDZ8kG7ydl4aPHwpCWnvXNM1vgxtGvnYLztwrse7IoaRXRYiMFmrso78WhMWUDKgvY4wV9aeUu0DtnMezZVIQwCKg=
+  - secure: 1QK0yVyoOB+gf2I7XzvhXu9w/5lq4stBXIwJbVCTjz4Q4XVHCosURaW1MAgKzMrPnbFEwjyn5uQ8BwsvvfkuN1AZD0YXITgc7gyI+J1wQ/p/ljxRxglakU6WEgsTs2J5z9UmGac4YTXg+quK7YP3rv+zuGim2I2rhzImejyzp0Ym3kRCnNcy+SGBsiRaevRJMe00Ch8zGAbEhduQGeSoS6W0rcu02DNlQKiq5NktWsXR+TWWWVfIeIlQR/lbPsCd0pdxMaMv2QCY0rVbwrYxWJwr/Qe45dAdWp+8/C3PbXpeMSGxlLa33nJNX4Lf/djxbjm8KWk6edaXPajrjR/0iwcpwq0jg2Jt6XfEdnJt35F1gpXlc04sxStjG45uloOKCFYT0wdhIO1Lq+hDP54wypQl+JInd5qC001O7pwhVxO36EgKWqo8HD+BqGDBwsNj2engy9Qcp3wO6G0rLBPB3CrZsk9wrHVv5cSiQSLMhId3Xviu3ZI2qEDA+kgTvxrKrsnMj4bILVCyG5Ka2Mj22wIDW9e8oIab9oTdujax3DTN1GkD6QuOAGzwDsNwGASsgfoeZ+FUhgM75RlBWGMilgkmnF7EJ0oAXLEpjtABnEr2d4qHv+y08kOuTDBLB9ExzCIj024dYYYNLZrqPKx0ncHuCMG2QNj2aJAJEZtj1rQ=
+
 addons:
   apt:
     sources:
       - sourceline: 'ppa:openmw/openmw'
       - sourceline: 'ppa:rakhimov/boost'
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.8
     packages: [
       # Dev
-      cmake, clang-3.8, libunshield-dev, libtinyxml-dev,
-      g++-6,
+      cmake, clang-6.0, libunshield-dev, libtinyxml-dev,
+      g++-8,
       # Tests
       libgtest-dev, google-mock,
       # Boost
@@ -45,7 +45,7 @@ addons:
     project:
       name: "TES3MP/openmw-tes3mp"
       description: "<Your project description here>"
-    notification_email: stas5978@gmail.com
+    notification_email: koncord@tes3mp.com
     build_command_prepend: "cmake . -DBUILD_UNITTESTS=FALSE -DBUILD_OPENCS=FALSE -DBUILD_BSATOOL=FALSE -DBUILD_ESMTOOL=FALSE -DBUILD_MWINIIMPORTER=FALSE -DBUILD_LAUNCHER=FALSE"
     build_command:   "make -j3"
     branch_pattern: coverity_scan
@@ -53,21 +53,21 @@ matrix:
   include:
     - os: linux
       env:
-        - ANALYZE="scan-build-3.8 --use-cc clang-3.8 --use-c++ clang++-3.8 "
-        - MATRIX_CC="CC=clang-3.8 && CXX=clang++-3.8"
+        - ANALYZE="scan-build-6.0 --use-cc clang-6.0 --use-c++ clang++-6.0 "
+        - MATRIX_CC="CC=clang-6.0 && CXX=clang++-6.0"
       compiler: clang
     - os: linux
       env:
-        - MATRIX_CC="CC=gcc-6 && CXX=g++-6"
+        - MATRIX_CC="CC=gcc-8 && CXX=g++-8"
     - os: linux
       env:
-        - MATRIX_CC="CC=clang-3.8 && CXX=clang++-3.8"
+        - MATRIX_CC="CC=clang-6.0 && CXX=clang++-6.0"
   allow_failures:
     - env:
-        - MATRIX_CC="CC=clang-3.8 && CXX=clang++-3.8"
+        - MATRIX_CC="CC=clang-6.0 && CXX=clang++-6.0"
     - env:
-        - ANALYZE="scan-build-3.8 --use-cc clang-3.8 --use-c++ clang++-3.8 "
-        - MATRIX_CC="CC=clang-3.8 && CXX=clang++-3.8"
+        - ANALYZE="scan-build-6.0 --use-cc clang-6.0 --use-c++ clang++-6.0 "
+        - MATRIX_CC="CC=clang-6.0 && CXX=clang++-6.0"
 
 before_install:
       - ./CI/before_install.${TRAVIS_OS_NAME}.sh

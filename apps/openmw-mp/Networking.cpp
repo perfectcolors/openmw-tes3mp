@@ -30,7 +30,7 @@ using namespace std;
 Networking *Networking::sThis = 0;
 
 static int currentMpNum = 0;
-static bool pluginEnforcementState = true;
+static bool dataFileEnforcementState = true;
 static bool scriptErrorIgnoringState = false;
 
 Networking::Networking(RakNet::RakPeerInterface *peer) : mclient(nullptr)
@@ -228,34 +228,34 @@ bool Networking::preInit(RakNet::Packet *packet, RakNet::BitStream &bsIn)
     }
 
     DEBUG_PRINTF("ID_GAME_PREINIT");
-    PacketPreInit::PluginContainer plugins;
+    PacketPreInit::PluginContainer dataFiles;
 
     PacketPreInit packetPreInit(peer);
     packetPreInit.SetReadStream(&bsIn);
-    packetPreInit.setChecksums(&plugins);
+    packetPreInit.setChecksums(&dataFiles);
     packetPreInit.Read();
 
-    if (!packetPreInit.isPacketValid() || plugins.empty())
+    if (!packetPreInit.isPacketValid() || dataFiles.empty())
     {
         LOG_APPEND(Log::LOG_ERROR, "Invalid packetPreInit");
         peer->CloseConnection(packet->systemAddress, false); // close connection without notification
         return false;
     }
 
-    auto plugin = plugins.begin();
-    if (samples.size() == plugins.size())
+    auto dataFile = dataFiles.begin();
+    if (samples.size() == dataFiles.size())
     {
-        for (int i = 0; plugin != plugins.end(); plugin++, i++)
+        for (int i = 0; dataFile != dataFiles.end(); dataFile++, i++)
         {
-            LOG_APPEND(Log::LOG_VERBOSE, "- %X\t%s", plugin->second[0], plugin->first.c_str());
+            LOG_APPEND(Log::LOG_VERBOSE, "- %X\t%s", dataFile->second[0], dataFile->first.c_str());
             // Check if the filenames match, ignoring case
-            if (Misc::StringUtils::ciEqual(samples[i].first, plugin->first))
+            if (Misc::StringUtils::ciEqual(samples[i].first, dataFile->first))
             {
                 auto &hashList = samples[i].second;
-                // Proceed if no checksums have been listed for this plugin on the server
+                // Proceed if no checksums have been listed for this dataFile on the server
                 if (hashList.empty())
                     continue;
-                auto it = find(hashList.begin(), hashList.end(), plugin->second[0]);
+                auto it = find(hashList.begin(), hashList.end(), dataFile->second[0]);
                 // Break the loop if the client's checksum isn't among those accepted by
                 // the server
                 if (it == hashList.end())
@@ -268,10 +268,10 @@ bool Networking::preInit(RakNet::Packet *packet, RakNet::BitStream &bsIn)
     RakNet::BitStream bs;
     packetPreInit.SetSendStream(&bs);
 
-    // If the loop above was broken, then the client's plugins do not match the server's
-    if (pluginEnforcementState && plugin != plugins.end())
+    // If the loop above was broken, then the client's data files do not match the server's
+    if (dataFileEnforcementState && dataFile != dataFiles.end())
     {
-        LOG_MESSAGE_SIMPLE(Log::LOG_INFO, "%s was not allowed to connect due to incompatible plugins", packet->systemAddress.ToString());
+        LOG_MESSAGE_SIMPLE(Log::LOG_INFO, "%s was not allowed to connect due to incompatible data files", packet->systemAddress.ToString());
         packetPreInit.setChecksums(&samples);
         packetPreInit.Send(packet->systemAddress);
         peer->CloseConnection(packet->systemAddress, true);
@@ -427,14 +427,14 @@ int Networking::incrementMpNum()
     return currentMpNum;
 }
 
-bool Networking::getPluginEnforcementState()
+bool Networking::getDataFileEnforcementState()
 {
-    return pluginEnforcementState;
+    return dataFileEnforcementState;
 }
 
-void Networking::setPluginEnforcementState(bool state)
+void Networking::setDataFileEnforcementState(bool state)
 {
-    pluginEnforcementState = state;
+    dataFileEnforcementState = state;
 }
 
 bool Networking::getScriptErrorIgnoringState()
@@ -585,8 +585,8 @@ void Networking::InitQuery(std::string queryAddr, unsigned short queryPort)
 
 void Networking::postInit()
 {
+    Script::Call<Script::CallbackIdentity("OnRequestDataFileList")>();
     Script::Call<Script::CallbackIdentity("OnServerPostInit")>();
-    Script::Call<Script::CallbackIdentity("OnRequestPluginList")>();
 }
 
 PacketPreInit::PluginContainer &Networking::getSamples()

@@ -1,5 +1,6 @@
 #include "Server.hpp"
 
+#include <components/misc/stringops.hpp>
 #include <components/openmw-mp/NetworkMessages.hpp>
 #include <components/openmw-mp/Log.hpp>
 #include <components/openmw-mp/Version.hpp>
@@ -9,6 +10,18 @@
 #include <apps/openmw-mp/MasterClient.hpp>
 #include <Script/Script.hpp>
 
+static std::string tempFilename;
+static std::chrono::high_resolution_clock::time_point startupTime = std::chrono::high_resolution_clock::now();
+
+void ServerFunctions::LogMessage(unsigned short level, const char *message) noexcept
+{
+    LOG_MESSAGE_SIMPLE(level, "[Script]: %s", message);
+}
+
+void ServerFunctions::LogAppend(unsigned short level, const char *message) noexcept
+{
+    LOG_APPEND(level, "[Script]: %s", message);
+}
 
 void ServerFunctions::StopServer(int code) noexcept
 {
@@ -35,14 +48,50 @@ void ServerFunctions::UnbanAddress(const char *ipAddress) noexcept
     mwmp::Networking::getPtr()->unbanAddress(ipAddress);
 }
 
+bool ServerFunctions::DoesFilePathExist(const char *filePath) noexcept
+{
+    return boost::filesystem::exists(filePath);
+}
+
+const char *ServerFunctions::GetCaseInsensitiveFilename(const char *folderPath, const char *filename) noexcept
+{
+    if (!boost::filesystem::exists(folderPath)) return "invalid";
+
+    boost::filesystem::directory_iterator end_itr; // default construction yields past-the-end
+
+    for (boost::filesystem::directory_iterator itr(folderPath); itr != end_itr; ++itr)
+    {
+        if (Misc::StringUtils::ciEqual(itr->path().filename().string(), filename))
+        {
+            tempFilename = itr->path().filename().string();
+            return tempFilename.c_str();
+        }
+    }
+    return "invalid";
+}
+
+const char* ServerFunctions::GetDataPath() noexcept
+{
+    return Script::GetModDir();
+}
+
+unsigned int ServerFunctions::GetMillisecondsSinceServerStart() noexcept
+{
+    std::chrono::high_resolution_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::milliseconds milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startupTime);
+    return milliseconds.count();
+}
+
 const char *ServerFunctions::GetOperatingSystemType() noexcept
 {
-    return Utils::getOperatingSystemType().c_str();
+    static const std::string operatingSystemType = Utils::getOperatingSystemType();
+    return operatingSystemType.c_str();
 }
 
 const char *ServerFunctions::GetArchitectureType() noexcept
 {
-    return Utils::getArchitectureType().c_str();
+    static const std::string architectureType = Utils::getArchitectureType();
+    return architectureType.c_str();
 }
 
 const char *ServerFunctions::GetServerVersion() noexcept
@@ -86,9 +135,9 @@ bool ServerFunctions::HasPassword() noexcept
     return mwmp::Networking::get().isPassworded();
 }
 
-bool ServerFunctions::GetPluginEnforcementState() noexcept
+bool ServerFunctions::GetDataFileEnforcementState() noexcept
 {
-    return mwmp::Networking::getPtr()->getPluginEnforcementState();
+    return mwmp::Networking::getPtr()->getDataFileEnforcementState();
 }
 
 bool ServerFunctions::GetScriptErrorIgnoringState() noexcept
@@ -113,9 +162,9 @@ void ServerFunctions::SetServerPassword(const char *password) noexcept
     mwmp::Networking::getPtr()->setServerPassword(password);
 }
 
-void ServerFunctions::SetPluginEnforcementState(bool state) noexcept
+void ServerFunctions::SetDataFileEnforcementState(bool state) noexcept
 {
-    mwmp::Networking::getPtr()->setPluginEnforcementState(state);
+    mwmp::Networking::getPtr()->setDataFileEnforcementState(state);
 }
 
 void ServerFunctions::SetScriptErrorIgnoringState(bool state) noexcept
@@ -137,34 +186,63 @@ void ServerFunctions::SetRuleValue(const char *key, double value) noexcept
         mc->SetRuleValue(key, value);
 }
 
-void ServerFunctions::AddPluginHash(const char *pluginName, const char *hashStr) noexcept
+void ServerFunctions::AddDataFileRequirement(const char *dataFilename, const char *checksumString) noexcept
 {
     auto &samples = mwmp::Networking::getPtr()->getSamples();
-    auto it = std::find_if(samples.begin(), samples.end(), [&pluginName](mwmp::PacketPreInit::PluginPair &item) {
-        return item.first == pluginName;
+    
+    auto it = std::find_if(samples.begin(), samples.end(), [&dataFilename](mwmp::PacketPreInit::PluginPair &item) {
+        return item.first == dataFilename;
     });
+
     if (it != samples.end())
-        it->second.push_back((unsigned) std::stoul(hashStr));
+    {
+        // If this is a filename we've added before, ensure our new checksumString for it isn't empty
+        if (strlen(checksumString) != 0)
+            it->second.push_back((unsigned)std::stoul(checksumString));
+    }
     else
     {
-        mwmp::PacketPreInit::HashList hashList;
+        mwmp::PacketPreInit::HashList checksumList;
 
-        unsigned hash = 0;
+        unsigned checksum = 0;
 
-        if (strlen(hashStr) != 0)
+        if (strlen(checksumString) != 0)
         {
-            hash = (unsigned) std::stoul(hashStr);
-            hashList.push_back(hash);
+            checksum = (unsigned) std::stoul(checksumString);
+            checksumList.push_back(checksum);
         }
-        samples.emplace_back(pluginName, hashList);
+        samples.emplace_back(dataFilename, checksumList);
 
-        auto mclient = mwmp::Networking::getPtr()->getMasterClient();
-        if (mclient)
-            mclient->PushPlugin({pluginName, hash});
+        auto masterClient = mwmp::Networking::getPtr()->getMasterClient();
+        
+        if (masterClient)
+            masterClient->PushPlugin({dataFilename, checksum});
     }
+}
+
+// All methods below are deprecated versions of methods from above
+
+bool ServerFunctions::DoesFileExist(const char *filePath) noexcept
+{
+    return DoesFilePathExist(filePath);
 }
 
 const char* ServerFunctions::GetModDir() noexcept
 {
-    return Script::GetModDir();
+    return GetDataPath();
+}
+
+bool ServerFunctions::GetPluginEnforcementState() noexcept
+{
+    return mwmp::Networking::getPtr()->getDataFileEnforcementState();
+}
+
+void ServerFunctions::SetPluginEnforcementState(bool state) noexcept
+{
+    SetDataFileEnforcementState(state);
+}
+
+void ServerFunctions::AddPluginHash(const char *pluginName, const char *checksumString) noexcept
+{
+    AddDataFileRequirement(pluginName, checksumString);
 }

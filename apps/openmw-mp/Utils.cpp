@@ -1,8 +1,6 @@
-//
-// Created by koncord on 04.03.17.
-//
-
 #include "Utils.hpp"
+
+#include <cstdarg>
 
 using namespace std;
 
@@ -51,4 +49,60 @@ ESM::Cell Utils::getCellFromDescription(std::string cellDescription)
     }
 
     return cell;
+}
+
+void Utils::getArguments(std::vector<boost::any> &params, va_list args, const std::string &def)
+{
+    params.reserve(def.length());
+
+    try
+    {
+        for (char c : def)
+        {
+            switch (c)
+            {
+            case 'i':
+                params.emplace_back(va_arg(args, unsigned int));
+                break;
+
+            case 'q':
+                params.emplace_back(va_arg(args, signed int));
+                break;
+
+            case 'l':
+                params.emplace_back(va_arg(args, unsigned long long));
+                break;
+
+            case 'w':
+                params.emplace_back(va_arg(args, signed long long));
+                break;
+
+            case 'f':
+                params.emplace_back(va_arg(args, double));
+                break;
+
+            case 'p':
+                params.emplace_back(va_arg(args, void*));
+                break;
+
+            case 's':
+                params.emplace_back(va_arg(args, const char*));
+                break;
+
+            case 'b':
+                params.emplace_back(va_arg(args, int));
+                break;
+
+            default:
+                throw runtime_error("C++ call: Unknown argument identifier " + c);
+            }
+        }
+    }
+
+    catch (...)
+    {
+        va_end(args);
+        throw;
+    }
+    va_end(args);
 }

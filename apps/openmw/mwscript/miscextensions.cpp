@@ -778,10 +778,14 @@ namespace MWScript
                             Start of tes3mp addition
 
                             Send an ID_OBJECT_DELETE packet every time an object is deleted
-                            through a script
+                            through a script, as long as we haven't already communicated
+                            a deletion for it
                         */
-                        if (mwmp::Main::get().getLocalPlayer()->isLoggedIn())
+                        if (mwmp::Main::get().getLocalPlayer()->isLoggedIn() &&
+                            ptr.getRefData().getLastCommunicatedState() != MWWorld::RefData::StateCommunication::Deleted)
                         {
+                            ptr.getRefData().setLastCommunicatedState(MWWorld::RefData::StateCommunication::Deleted);
+
                             mwmp::ObjectList *objectList = mwmp::Main::get().getNetworking()->getObjectList();
                             objectList->reset();
                             objectList->packetOrigin = ScriptController::getPacketOriginFromContextType(runtime.getContext().getContextType());

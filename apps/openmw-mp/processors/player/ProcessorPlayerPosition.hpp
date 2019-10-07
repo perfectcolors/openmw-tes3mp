@@ -1,7 +1,3 @@
-//
-// Created by koncord on 31.03.17.
-//
-
 #ifndef OPENMW_PROCESSORPLAYERPOSITION_HPP
 #define OPENMW_PROCESSORPLAYERPOSITION_HPP
 
@@ -19,11 +15,7 @@ namespace mwmp
 
         void Do(PlayerPacket &packet, Player &player) override
         {
-            //DEBUG_PRINTF(strPacketID);
-            if (!player.creatureStats.mDead)
-            {
-                player.sendToLoaded(&packet);
-            }
+            player.sendToLoaded(&packet);
         }
     };
 }

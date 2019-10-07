@@ -21,7 +21,7 @@ int ScriptFunctions::CreateTimerEx(ScriptFunc callback, int msec, const char *ty
     try
     {
         vector<boost::any> params;
-        GetArguments(params, args, types);
+        Utils::getArguments(params, args, types);
 
         return mwmp::TimerAPI::CreateTimer(callback, msec, types, params);
     }

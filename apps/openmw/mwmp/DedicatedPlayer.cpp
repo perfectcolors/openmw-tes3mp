@@ -71,6 +71,13 @@ DedicatedPlayer::~DedicatedPlayer()
 
 void DedicatedPlayer::update(float dt)
 {
+    // Only move and set anim flags if the framerate isn't too low
+    if (dt < 0.1)
+    {
+        move(dt);
+        setAnimFlags();
+    }
+
     MWMechanics::CreatureStats *ptrCreatureStats = &ptr.getClass().getCreatureStats(ptr);
 
     MWMechanics::DynamicStat<float> value;
@@ -100,13 +107,6 @@ void DedicatedPlayer::update(float dt)
     ptrCreatureStats->setAiSetting(MWMechanics::CreatureStats::AI_Fight, 0);
     ptrCreatureStats->setAiSetting(MWMechanics::CreatureStats::AI_Flee, 0);
     ptrCreatureStats->setAiSetting(MWMechanics::CreatureStats::AI_Hello, 0);
-
-    // Only move and set anim flags if the framerate isn't too low
-    if (dt < 0.1)
-    {
-        move(dt);
-        setAnimFlags();
-    }
 }
 
 void DedicatedPlayer::move(float dt)

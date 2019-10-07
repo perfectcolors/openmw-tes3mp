@@ -201,6 +201,17 @@ int StatsFunctions::GetAttributeModifier(unsigned short pid, unsigned short attr
     return player->creatureStats.mAttributes[attributeId].mMod;
 }
 
+double StatsFunctions::GetAttributeDamage(unsigned short pid, unsigned short attributeId) noexcept
+{
+    Player *player;
+    GET_PLAYER(pid, player, 0);
+
+    if (attributeId >= Attribute::Length)
+        return 0;
+
+    return player->creatureStats.mAttributes[attributeId].mDamage;
+}
+
 int StatsFunctions::GetSkillBase(unsigned short pid, unsigned short skillId) noexcept
 {
     Player *player;
@@ -221,6 +232,17 @@ int StatsFunctions::GetSkillModifier(unsigned short pid, unsigned short skillId)
         return 0;
 
     return player->npcStats.mSkills[skillId].mMod;
+}
+
+double StatsFunctions::GetSkillDamage(unsigned short pid, unsigned short skillId) noexcept
+{
+    Player *player;
+    GET_PLAYER(pid, player, 0);
+
+    if (skillId >= Skill::Length)
+        return 0;
+
+    return player->npcStats.mSkills[skillId].mDamage;
 }
 
 double StatsFunctions::GetSkillProgress(unsigned short pid, unsigned short skillId) noexcept
@@ -437,6 +459,20 @@ void StatsFunctions::ClearAttributeModifier(unsigned short pid, unsigned short a
         player->attributeIndexChanges.push_back(attributeId);
 }
 
+void StatsFunctions::SetAttributeDamage(unsigned short pid, unsigned short attributeId, double value) noexcept
+{
+    Player *player;
+    GET_PLAYER(pid, player, );
+
+    if (attributeId >= Attribute::Length)
+        return;
+
+    player->creatureStats.mAttributes[attributeId].mDamage = value;
+
+    if (!Utils::vectorContains(player->attributeIndexChanges, attributeId))
+        player->attributeIndexChanges.push_back(attributeId);
+}
+
 void StatsFunctions::SetSkillBase(unsigned short pid, unsigned short skillId, int value) noexcept
 {
     Player *player;
@@ -460,6 +496,20 @@ void StatsFunctions::ClearSkillModifier(unsigned short pid, unsigned short skill
         return;
 
     player->npcStats.mSkills[skillId].mMod = 0;
+
+    if (!Utils::vectorContains(player->skillIndexChanges, skillId))
+        player->skillIndexChanges.push_back(skillId);
+}
+
+void StatsFunctions::SetSkillDamage(unsigned short pid, unsigned short skillId, double value) noexcept
+{
+    Player *player;
+    GET_PLAYER(pid, player, );
+
+    if (skillId >= Skill::Length)
+        return;
+
+    player->npcStats.mSkills[skillId].mDamage = value;
 
     if (!Utils::vectorContains(player->skillIndexChanges, skillId))
         player->skillIndexChanges.push_back(skillId);

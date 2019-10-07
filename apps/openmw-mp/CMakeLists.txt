@@ -144,6 +144,7 @@ set(PROCESSORS
 source_group(tes3mp-server\\processors FILES ${PROCESSORS})
 
 include_directories("./")
+include_directories(${CMAKE_SOURCE_DIR}/extern)
 
 # Main executable
 
