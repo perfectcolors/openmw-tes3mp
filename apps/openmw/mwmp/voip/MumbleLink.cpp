@@ -84,9 +84,9 @@ namespace mwmp
         }
         lm->uiTick++;
 
-        float front[3] = { forward.x(), forward.z(), forward.y() };
-        float top[3] = { up.x(), up.z(), up.y() };
-        float position[3] = { pos.x(), pos.z(), pos.y() };
+        osg::Vec3f front = { forward.x(), forward.z(), forward.y() };
+        osg::Vec3f top = { up.x(), up.z(), up.y() };
+        osg::Vec3f position = { pos.x(), pos.z(), pos.y() };
 
         // Left handed coordinate system.
         // X positive towards "right".
@@ -96,31 +96,17 @@ namespace mwmp
         // 1 unit = 1 meter
 
         // Unit vector pointing out of the avatar's eyes aka "At"-vector.
-        lm->fAvatarFront[0] = front[0];
-        lm->fAvatarFront[1] = front[1];
-        lm->fAvatarFront[2] = front[2];
+        lm->fAvatarFront = front;
 
         // Unit vector pointing out of the top of the avatar's head aka "Up"-vector (here Top points straight up).
-        lm->fAvatarTop[0] = top[0];
-        lm->fAvatarTop[1] = top[1];
-        lm->fAvatarTop[2] = top[2];
+        lm->fAvatarTop = top;
 
         // Position of the avatar (here standing slightly off the origin)
-        lm->fAvatarPosition[0] = position[0] * convert_to_meters;
-        lm->fAvatarPosition[1] = position[1] * convert_to_meters;
-        lm->fAvatarPosition[2] = position[2] * convert_to_meters;
+        lm->fAvatarPosition = position * convert_to_meters;
 
         // Same as avatar but for the camera.
-        lm->fCameraPosition[0] = position[0] * convert_to_meters;
-        lm->fCameraPosition[1] = position[1] * convert_to_meters;
-        lm->fCameraPosition[2] = position[2] * convert_to_meters;
-
-        lm->fCameraFront[0] = front[0];
-        lm->fCameraFront[1] = front[1];
-        lm->fCameraFront[2] = front[2];
-
-        lm->fCameraTop[0] = top[0];
-        lm->fCameraTop[1] = top[1];
-        lm->fCameraTop[2] = top[2];
+        lm->fCameraPosition = position * convert_to_meters;
+        lm->fCameraFront = front;
+        lm->fCameraTop = top;
     }
 }

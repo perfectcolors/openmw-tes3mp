@@ -465,7 +465,7 @@ void LocalPlayer::updateCell(bool forceUpdate)
 
         isChangingRegion = false;
 		
-		MumbleLink::setContext(MWBase::Environment::get().getWorld()->getCellName());
+        MumbleLink::setContext(MWBase::Environment::get().getWorld()->getCellName());
     }
 }
 
