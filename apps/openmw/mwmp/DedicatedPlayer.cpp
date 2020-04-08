@@ -258,14 +258,10 @@ void DedicatedPlayer::setAnimFlags()
         cast.cast("Levitate");
     }
 
-    if (drawState == 0)
-        ptr.getClass().getCreatureStats(ptr).setDrawState(DrawState_Nothing);
-    else if (drawState == 1)
-        ptr.getClass().getCreatureStats(ptr).setDrawState(DrawState_Weapon);
-    else if (drawState == 2)
-        ptr.getClass().getCreatureStats(ptr).setDrawState(DrawState_Spell);
-
     MWMechanics::CreatureStats *ptrCreatureStats = &ptr.getClass().getCreatureStats(ptr);
+
+    ptrCreatureStats->setDrawState(static_cast<MWMechanics::DrawState_>(drawState));
+
     ptrCreatureStats->setMovementFlag(CreatureStats::Flag_Run, (movementFlags & CreatureStats::Flag_Run) != 0);
     ptrCreatureStats->setMovementFlag(CreatureStats::Flag_Sneak, (movementFlags & CreatureStats::Flag_Sneak) != 0);
     ptrCreatureStats->setMovementFlag(CreatureStats::Flag_ForceJump, (movementFlags & CreatureStats::Flag_ForceJump) != 0);
@@ -388,7 +384,9 @@ void DedicatedPlayer::setCell()
         removeMarker();
     // Otherwise, update their marker so the player shows up in the right cell on the world map
     else
-        updateMarker();
+    {
+        enableMarker();
+    }
 
     // If this player is now in a cell that we are the local authority over, we should send them all
     // NPC data in that cell
@@ -412,7 +410,9 @@ void DedicatedPlayer::setCell()
 void DedicatedPlayer::updateMarker()
 {
     if (!markerEnabled)
+    {
         return;
+    }
 
     GUIController *gui = Main::get().getGUIController();
 
@@ -423,7 +423,15 @@ void DedicatedPlayer::updateMarker()
         gui->mPlayerMarkers.addMarker(marker);
     }
     else
+    {
         gui->mPlayerMarkers.addMarker(marker, true);
+    }
+}
+
+void DedicatedPlayer::enableMarker()
+{
+    markerEnabled = true;
+    updateMarker();
 }
 
 void DedicatedPlayer::removeMarker()
@@ -435,18 +443,9 @@ void DedicatedPlayer::removeMarker()
     GUIController *gui = Main::get().getGUIController();
 
     if (gui->mPlayerMarkers.contains(marker))
-        Main::get().getGUIController()->mPlayerMarkers.deleteMarker(marker);
-}
-
-void DedicatedPlayer::setMarkerState(bool state)
-{
-    if (state)
     {
-        markerEnabled = true;
-        updateMarker();
+        Main::get().getGUIController()->mPlayerMarkers.deleteMarker(marker);
     }
-    else
-        removeMarker();
 }
 
 void DedicatedPlayer::playAnimation()
@@ -476,7 +475,7 @@ void DedicatedPlayer::createReference(const std::string& recId)
 
     ESM::CustomMarker mEditingMarker = Main::get().getGUIController()->createMarker(guid);
     marker = mEditingMarker;
-    setMarkerState(true);
+    enableMarker();
 }
 
 void DedicatedPlayer::deleteReference()

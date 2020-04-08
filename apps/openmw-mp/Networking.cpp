@@ -14,6 +14,7 @@
 #include <Script/API/TimerAPI.hpp>
 #include <chrono>
 #include <thread>
+#include <csignal>
 
 #include "Networking.hpp"
 #include "MasterClient.hpp"
@@ -32,6 +33,7 @@ Networking *Networking::sThis = 0;
 static int currentMpNum = 0;
 static bool dataFileEnforcementState = true;
 static bool scriptErrorIgnoringState = false;
+bool killLoop = false;
 
 Networking::Networking(RakNet::RakPeerInterface *peer) : mclient(nullptr)
 {
@@ -469,12 +471,30 @@ void Networking::stopServer(int code)
     exitCode = code;
 }
 
+void signalHandler(int signum) 
+{
+    cout << "Interrupt signal (" << signum << ") received.\n";
+    //15 is SIGTERM(Normal OS stop call), 2 is SIGINT(Ctrl+C)
+    if(signum == 15 or signum == 2)
+    {
+        killLoop = true;
+    }
+}
+
 int Networking::mainLoop()
 {
     RakNet::Packet *packet;
 
-    while (running)
+    struct sigaction sigIntHandler;
+    
+    sigIntHandler.sa_handler = signalHandler;
+    sigemptyset(&sigIntHandler.sa_mask);
+    sigIntHandler.sa_flags = 0;
+    
+    while (running and !killLoop)
     {
+        sigaction(SIGTERM, &sigIntHandler, NULL);
+        sigaction(SIGINT, &sigIntHandler, NULL);
         if (kbhit() && getch() == '\n')
             break;
         for (packet=peer->Receive(); packet; peer->DeallocatePacket(packet), packet=peer->Receive())

@@ -458,15 +458,6 @@ namespace MWGui
 
         updateMagicMarkers();
         updateCustomMarkers();
-        /*
-            Start of tes3mp addition
-
-            Update player markers when cell changes to fix their locations
-        */
-        updatePlayerMarkers();
-        /*
-            End of tes3mp addition
-        */
     }
 
     void LocalMapBase::requestMapRender(const MWWorld::CellStore *cell)

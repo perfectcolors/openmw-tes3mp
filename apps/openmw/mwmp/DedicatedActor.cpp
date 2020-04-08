@@ -35,7 +35,7 @@ using namespace std;
 
 DedicatedActor::DedicatedActor()
 {
-    drawState = 0;
+    drawState = MWMechanics::DrawState_::DrawState_Nothing;
     movementFlags = 0;
     animation.groupname = "";
     sound = "";
@@ -133,12 +133,7 @@ void DedicatedActor::setAnimFlags()
 
     MWMechanics::CreatureStats *ptrCreatureStats = &ptr.getClass().getCreatureStats(ptr);
 
-    if (drawState == 0)
-        ptrCreatureStats->setDrawState(DrawState_Nothing);
-    else if (drawState == 1)
-        ptrCreatureStats->setDrawState(DrawState_Weapon);
-    else if (drawState == 2)
-        ptrCreatureStats->setDrawState(DrawState_Spell);
+    ptrCreatureStats->setDrawState(static_cast<MWMechanics::DrawState_>(drawState));
 
     ptrCreatureStats->setMovementFlag(CreatureStats::Flag_Run, (movementFlags & CreatureStats::Flag_Run) != 0);
     ptrCreatureStats->setMovementFlag(CreatureStats::Flag_Sneak, (movementFlags & CreatureStats::Flag_Sneak) != 0);

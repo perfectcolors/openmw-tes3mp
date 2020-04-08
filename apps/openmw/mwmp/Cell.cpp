@@ -301,19 +301,23 @@ void Cell::readAttack(ActorList& actorList)
 
         if (dedicatedActors.count(mapIndex) > 0)
         {
+            LOG_MESSAGE_SIMPLE(Log::LOG_INFO, "Reading ActorAttack about %s", mapIndex.c_str());
+
             DedicatedActor *actor = dedicatedActors[mapIndex];
             actor->attack = baseActor.attack;
 
             // Set the correct drawState here if we've somehow we've missed a previous
             // AnimFlags packet
-            if (actor->drawState != 1 && (actor->attack.type == mwmp::Attack::MELEE || actor->attack.type == mwmp::Attack::RANGED))
+            if (actor->drawState != MWMechanics::DrawState_::DrawState_Weapon &&
+                (actor->attack.type == mwmp::Attack::MELEE || actor->attack.type == mwmp::Attack::RANGED))
             {
-                actor->drawState = 1;
+                actor->drawState = MWMechanics::DrawState_::DrawState_Weapon;
                 actor->setAnimFlags();
             }
-            else if (actor->drawState != 2 && (actor->attack.type == mwmp::Attack::MAGIC || actor->attack.type == mwmp::Attack::ITEM_MAGIC))
+            else if (actor->drawState != MWMechanics::DrawState_::DrawState_Spell &&
+                (actor->attack.type == mwmp::Attack::MAGIC || actor->attack.type == mwmp::Attack::ITEM_MAGIC))
             {
-                actor->drawState = 2;
+                actor->drawState = MWMechanics::DrawState_::DrawState_Spell;
                 actor->setAnimFlags();
             }
 

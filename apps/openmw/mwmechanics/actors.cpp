@@ -845,14 +845,17 @@ namespace MWMechanics
                         /*
                             Start of tes3mp addition
 
-                            If the victim was a LocalActor who died, record the caster as the killer
+                            If the victim was the LocalPlayer or a LocalActor, record the caster as their killer
                         */
-                        if (mwmp::Main::get().getCellController()->isLocalActor(ptr))
-                        {
-                            bool isSuicide = ptr == caster || caster.isEmpty();
+                        mwmp::Target killer = MechanicsHelper::getTarget(caster);
 
-                            mwmp::Main::get().getCellController()->getLocalActor(ptr)->killer = isSuicide ?
-                                MechanicsHelper::getTarget(ptr) : MechanicsHelper::getTarget(caster);
+                        if (ptr == MWMechanics::getPlayer())
+                        {
+                            mwmp::Main::get().getLocalPlayer()->killer = killer;
+                        }
+                        else if (mwmp::Main::get().getCellController()->isLocalActor(ptr))
+                        {
+                            mwmp::Main::get().getCellController()->getLocalActor(ptr)->killer = killer;
                         }
                         /*
                             End of tes3mp addition

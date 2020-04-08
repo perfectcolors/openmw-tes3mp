@@ -1575,7 +1575,7 @@ namespace MWGui
             switch (quickKeyType)
             {
             case QuickKeysMenu::Type_Unassigned:
-                mQuickKeysMenu->unassignIndex(slot);
+                mQuickKeysMenu->unassignIndex(slot - 1);
                 break;
             case QuickKeysMenu::Type_Item:
                 mQuickKeysMenu->onAssignItem(item);

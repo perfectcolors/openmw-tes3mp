@@ -37,6 +37,8 @@ namespace mwmp
 
         static bool isDedicatedPlayer(const MWWorld::Ptr &ptr);
 
+        static void enableMarkers(const ESM::Cell& cell);
+
         static void clearHitAttemptActorId(int actorId);
 
     private:
