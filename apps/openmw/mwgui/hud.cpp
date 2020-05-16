@@ -306,26 +306,7 @@ namespace MWGui
             {
                 // pick up object
                 if (!object.isEmpty())
-                /*
-                    Start of tes3mp change (major)
-
-                    Disable unilateral picking up of objects on this client
-
-                    Instead, send an ID_OBJECT_ACTIVATE packet every time an item is made to pick up
-                    an item here, and expect the server's reply to our packet to cause the actual
-                    picking up of items
-                */
-                    //MWBase::Environment::get().getWindowManager()->getInventoryWindow()->pickUpObject(object);
-                {
-                    mwmp::ObjectList *objectList = mwmp::Main::get().getNetworking()->getObjectList();
-                    objectList->reset();
-                    objectList->packetOrigin = mwmp::CLIENT_GAMEPLAY;
-                    objectList->addObjectActivate(object, MWMechanics::getPlayer());
-                    objectList->sendObjectActivate();
-                }
-                /*
-                    End of tes3mp change (major)
-                */
+                    MWBase::Environment::get().getWindowManager()->getInventoryWindow()->pickUpObject(object);
             }
         }
     }
