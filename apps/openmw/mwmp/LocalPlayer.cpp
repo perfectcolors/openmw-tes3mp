@@ -36,7 +36,6 @@
 #include "LocalPlayer.hpp"
 #include "Main.hpp"
 #include "Networking.hpp"
-#include "PlayerList.hpp"
 #include "CellController.hpp"
 #include "GUIController.hpp"
 #include "MechanicsHelper.hpp"
@@ -465,13 +464,6 @@ void LocalPlayer::updateCell(bool forceUpdate)
         getNetworking()->getPlayerPacket(ID_PLAYER_CELL_CHANGE)->Send();
 
         isChangingRegion = false;
-
-        // If this is an interior cell, are there any other players in it? If so,
-        // enable their markers
-        if (!ptrCell->isExterior())
-        {
-            mwmp::PlayerList::enableMarkers(*ptrCell);
-        }
 
         MumbleLink::setContext(MWBase::Environment::get().getWorld()->getCellName());
     }

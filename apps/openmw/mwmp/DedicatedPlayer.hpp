@@ -47,7 +47,7 @@ namespace mwmp
 
         void updateMarker();
         void removeMarker();
-        void enableMarker();
+        void setMarkerState(bool state);
 
         void playAnimation();
         void playSpeech();

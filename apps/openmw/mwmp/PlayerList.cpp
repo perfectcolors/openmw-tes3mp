@@ -92,17 +92,6 @@ bool PlayerList::isDedicatedPlayer(const MWWorld::Ptr &ptr)
     return (getPlayer(ptr) != 0);
 }
 
-void PlayerList::enableMarkers(const ESM::Cell& cell)
-{
-    for (auto &playerEntry : players)
-    {
-        if (Main::get().getCellController()->isSameCell(cell, playerEntry.second->cell))
-        {
-            playerEntry.second->enableMarker();
-        }
-    }
-}
-
 /*
     Go through all DedicatedPlayers checking if their mHitAttemptActorId matches this one
     and set it to -1 if it does
